@@ -47,6 +47,17 @@ async function run() {
       res.json(result);
     })
 
+    app.patch("/car/:id", async (req, res) => {
+      const { id } = req.params;
+      const updateData = req.body;
+
+      const result = await carCollection.updateOne(
+        {_id: new ObjectId(id)},
+        {$set: updateData}
+      )
+
+      res.json(result);
+    })
 
     
     console.log("Pinged your deployment. You successfully connected to MongoDB!");
