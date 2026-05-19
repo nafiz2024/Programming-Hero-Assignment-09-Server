@@ -34,7 +34,11 @@ async function run() {
       res.json(result)
     })
 
-    
+    app.get('/car', async (req, res) => {
+      const result = await carCollection.find().toArray();
+
+      res.json(result);
+    })
 
 
     
