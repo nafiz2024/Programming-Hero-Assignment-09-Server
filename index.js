@@ -74,6 +74,12 @@ async function run() {
       res.json(result);
     })
 
+    app.get('/booking', async (req, res) => {
+      const result = await bookingCollection.find().toArray();
+
+      res.json(result);
+    })
+
     
     console.log("Pinged your deployment. You successfully connected to MongoDB!");
   } finally {
