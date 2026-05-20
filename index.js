@@ -10,7 +10,13 @@ const uri = process.env.MONGODB_URI;
 const app = express()
 const PORT = process.env.PORT
 
-app.use(cors())
+const allowedOrigin = process.env.CLIENT_URI || "http://localhost:3000";
+app.use(
+  cors({
+    origin: allowedOrigin,
+    credentials: true,
+  })
+)
 app.use(express.json())
 
 const client = new MongoClient(uri, {
