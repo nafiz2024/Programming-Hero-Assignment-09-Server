@@ -22,7 +22,7 @@ const client = new MongoClient(uri, {
 });
 
 const JWKS = createRemoteJWKSet(
-  new URL("http://localhost:3000/api/auth/jwks")
+  new URL(`${process.env.CLIENT_URI}/api/auth/jwks`)
 )
 
 const verifyToken = async (req, res, next) => {
@@ -47,20 +47,20 @@ const verifyToken = async (req, res, next) => {
 
 async function run() {
   try {
-    await client.connect();
+    // await client.connect();
 
     const db = client.db("drivenfleet")
     const carCollection = db.collection("cars")
     const bookingCollection = db.collection("bookings")
 
-    app.post('/car', async (req, res) => {
+    app.post('/car', verifyToken, async (req, res) => {
       const carData = req.body
       const result = await carCollection.insertOne(carData)
 
       res.json(result)
     })
 
-    app.get('/car', async (req, res) => {
+    app.get('/car', verifyToken, async (req, res) => {
       const result = await carCollection.find().toArray();
 
       res.json(result);
@@ -73,7 +73,7 @@ async function run() {
       res.json(result);
     })
 
-    app.patch("/car/:id", async (req, res) => {
+    app.patch("/car/:id", verifyToken, async (req, res) => {
       const { id } = req.params;
       const updateData = req.body;
 
@@ -85,27 +85,27 @@ async function run() {
       res.json(result);
     })
 
-    app.delete("/car/:id", async (req, res) => {
+    app.delete("/car/:id", verifyToken, async (req, res) => {
       const { id } = req.params;
       const result = await carCollection.deleteOne({ _id: new ObjectId(id) });
       
       res.json(result);
     })
 
-    app.post("/booking", async (req, res) => {
+    app.post("/booking", verifyToken, async (req, res) => {
       const bookingData = req.body;
       const result = await bookingCollection.insertOne(bookingData)
 
       res.json(result);
     })
 
-    app.get('/booking', async (req, res) => {
+    app.get('/booking', verifyToken, async (req, res) => {
       const result = await bookingCollection.find().toArray();
 
       res.json(result);
     })
 
-    app.delete("/booking/:id", async (req, res) => {
+    app.delete("/booking/:id", verifyToken, async (req, res) => {
       const id = req.params.id;
       const result = await bookingCollection.deleteOne({ _id: new ObjectId(id) });
 
